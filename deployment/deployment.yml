@@ -1,0 +1,124 @@
+##########################################################################################
+# Usage
+# sudo ansible-playbook -i hosts.ini --user anirsh deployment.yml
+##########################################################################################
+- hosts: webservers
+  gather_facts: yes
+  sudo: yes
+  environment:
+    SLACK_TOKEN: 'xoxb-800740404854-785778439154-tnO4b7hgfWzoUp1pwekQnmLX'
+    PORT: 9000
+    MANAGER_NAME: 'ssiddha'
+    DATABASE_URL: 'postgresql://anirsh:password@127.0.0.1:5432/postgres'
+  tasks:
+      - name: Ensure bash, OpenSSl, and libssl are the latest versions
+        apt: name={{ item }} update_cache=true state=latest
+        with_items:
+          - bash
+          - openssl
+          - libssl-dev
+          - libssl-doc
+          - python3-pip
+      - name: apt-get update
+        apt:
+          update_cache: yes
+      - name: Install postgres
+        apt:
+          pkg:
+            - nodejs
+            - npm
+            - postgresql
+            - postgresql-contrib
+            - python3-psycopg2
+            - libpq-dev
+          state: present
+          update_cache: yes
+      - name: create user anirsh
+        postgresql_user:
+          name: anirsh
+          password: password
+          role_attr_flags: CREATEDB,SUPERUSER
+          encrypted: true
+        become_user: postgres
+      - name: Instllaing forever
+        npm:
+          name: forever
+          global: yes
+      - name: Initialize database
+        postgresql_db:
+          name: mydb
+          state: present
+        become_user: postgres
+      - name: Install python
+        apt:
+          name: python
+          update_cache: yes
+          state: latest
+          install_recommends: yes
+        become: yes
+        ignore_errors: true
+
+      - name: Install pip
+        apt:
+          name: python-pip
+          update_cache: yes
+          state: latest
+          install_recommends: yes
+        become: yes
+        ignore_errors: true
+
+      - name: Install git
+        become: yes
+        apt: pkg=git state=present update_cache=yes cache_valid_time=20000
+
+      
+      # - name: Clone repo
+      #   git:
+      #     repo: https://{{token}}@github.ncsu.edu/csc510-fall2019/CSC510-1.git
+      #     dest: /home/CSC510-1/
+      #     accept_hostkey: yes
+      #     force: yes
+
+      - name: Ensure we have access from the new user
+        become: yes
+        become_user: postgres
+        postgresql_privs:
+          db: postgres
+          role: postgres
+          objs: ALL_IN_SCHEMA
+          privs: SELECT,INSERT,UPDATE,DELETE
+      
+      - name: Initiate the Postgresql service
+        become: yes
+        service:
+          name: postgresql
+          state: started
+          enabled: true
+      
+      - name: NPM install from package json
+        npm:
+          path: "/home/{{ ansible_user }}/app/"
+          state: present
+      
+      - name: check the presence of file
+        stat:
+          path: "/home/{{ ansible_user }}/app/"
+        register: stat_result
+      - name: Copy application
+        copy:
+          src: ../app/
+          dest: "/home/{{ ansible_user }}/app"
+        when: stat_result.stat.exists == False
+      
+      - name: Start Slack Server
+        shell: forever start /home/{{ ansible_user }}/app/index.js
+        become: yes 
+      # - name: NPM install from package json
+      #   npm:
+      #     path: "/home/{{ ansible_user }}/app"
+      #     state: present
+      # - name: Run the server
+      #   shell:
+      #     chdir: "/home/{{ ansible_user }}/app"
+      #     cmd: "forever start -c 'npm start'"
+

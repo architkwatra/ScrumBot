@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "members": [
+      {
+          "id": "A102"
+      }
+  ],
+  "response_metadata": {
+
+  },
+  "users":
+    [
+        {"user_name":"User1", "user_id":1},
+        {"user_name":"User2", "user_id":2},
+        {"user_name":"User3", "user_id":3},
+        {"user_name":"User4", "user_id":4},
+        {"user_name":"User5", "user_id":5},
+        {"user_name":"User6", "user_id":6}
+      ],
+  "daily_scrum_update" :
+  [
+    {"date": "10/17/2019","user_name":"User1", "user_id":1, "update":"Worked on ABC Feature"},
+    {"date": "10/17/2019","user_name":"User2", "user_id":2, "update":"Completed the test for new UI update on login page"},
+    {"date": "10/17/2019","user_name":"User3", "user_id":3, "update":"Added new subject line to email notification feature"},
+    {"date": "10/17/2019","user_name":"User4", "user_id":4, "update":"Image Upload functionality is integrated"},
+    {"date": "10/17/2019","user_name":"User5", "user_id":5, "update":"Completed writing automation scripts to test export to PDF function"},
+    {"date": "10/17/2019","user_name":"User6", "user_id":6, "update":"Gathering Requirements from the PM for next release"},
+    {"date": "10/18/2019","user_name":"User1", "user_id":1, "update":"Worked on ABC Feature"},
+    {"date": "10/18/2019","user_name":"User2", "user_id":2, "update":"Completed the test for new UI update on login page"},
+    {"date": "10/18/2019","user_name":"User3", "user_id":3, "update":"Added new subject line to email notification feature"},
+    {"date": "10/18/2019","user_name":"User4", "user_id":4, "update":"Image Upload functionality is integrated"},
+    {"date": "10/18/2019","user_name":"User5", "user_id":5, "update":"Completed writing automation scripts to test export to PDF function"},
+    {"date": "10/18/2019","user_name":"User6", "user_id":6, "update":"Gathering Requirements from the PM for next release"}
+  ]
+}
